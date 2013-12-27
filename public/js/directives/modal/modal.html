@@ -1,0 +1,19 @@
+<div id="{{ windowId }}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>{{title}}</h4>
+            </div>
+            <form name="form" ng-submit="submit()" autocomplete="off" class="form-horizontal" style="margin-bottom: 0;">
+                <div class="modal-body">
+                    <div ng-include="template"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" ng-click="close()">Отмена</button>
+                    <input type="submit" id="submit" class="btn btn-primary" value="{{okButtonText}}"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

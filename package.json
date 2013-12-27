@@ -1,0 +1,17 @@
+{
+  "name": "boobsgr.am",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.4.7",
+    "jade": "*",
+    "mongoose": "~3.8.3",
+    "gm": "~1.14.1",
+    "passport-local": "~0.1.6",
+    "passport": "~0.1.17",
+    "node-uuid": "~1.4.1"
+  }
+}
