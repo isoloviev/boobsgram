@@ -1,0 +1,17 @@
+<div ng-show="authWarning">
+    <h1>Authorization Required</h1>
+
+    <div class="alert alert-info">
+        You should be logged in to continue.
+    </div>
+</div>
+
+<div ng-show="!authWarning">
+    <h1>Login</h1>
+
+    <div class="well">
+        To start using our service, please login by clicking button below.
+    </div>
+</div>
+
+<div class="text-center"><a href="/auth/facebook" target="_self"><img src="/img/login_with_facebook.png"></a></div>

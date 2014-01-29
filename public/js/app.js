@@ -1,7 +1,7 @@
 'use strict';
 
 require.config({
-    urlArgs: window.appConfig.isProduction ? "" :  "noCache=" + (new Date()).getTime(),
+    urlArgs: window.appConfig.isProduction ? "" : "noCache=" + (new Date()).getTime(),
     paths: {
         angular: '../libs/angular',
         angularLoader: '../libs/loading-bar.min',
@@ -9,10 +9,12 @@ require.config({
         angularTouch: '../libs/angular-touch.min',
         angularCookies: '../libs/angular-cookies.min',
         angularStrap: '../libs/angular-strap.min',
-        angularScroll: '../libs/ng-infinite-scroll',
         'angular-file-upload': '../libs/angular-file-upload',
-        jquery: '//ajax.googleapis.com/ajax/libs/jquery/2.0.1/jquery.min',
-        bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min'
+        bootstrap: '../libs/bootstrap.min',
+        jquery: '../libs/jquery.min',
+        jqueryScroll: '../libs/jquery.custom-scrollbar.min',
+        jqueryCookies: '../libs/jquery.cookie',
+        ya: '//yandex.st/share/share'
     },
     shim: {
         bootstrap: {
@@ -40,11 +42,17 @@ require.config({
         'angular-file-upload': {
             deps: ['angular']
         },
-        angularScroll: {
-            deps: ['angular']
-        },
         jquery: {
             exports: '$'
+        },
+        jqueryScroll: {
+            deps: ['jquery']
+        },
+        'jqueryCookies': {
+            deps: ['jquery']
+        },
+        ya: {
+            exports: 'Ya'
         }
     }
 });
@@ -58,81 +66,81 @@ require([
     'angularCookies',
     'bootstrap',
     'jquery',
+    'modules/routingConfig',
+    'modules/AccessLevel',
     'models/user',
     'models/photo',
     'controllers/overview/overview',
     'controllers/upload/upload',
     'directives/modal/modal',
-    'errorHandler',
+    'directives/scroll/scroll',
+    'directives/photo/photo',
+    'directives/comments/comments',
+    'directives/warning/warning',
+    'directives/access/accessLevel',
     'angular-file-upload',
-    'angularScroll'
+    'jqueryCookies'
 ], function (angular) {
 
-    var app = angular.module('App', ['ngCookies', 'ngRoute', 'ngTouch', 'chieffancypants.loadingBar', 'Overview', 'Upload', 'ModalDirective', 'UserProvider', 'PhotoProvider', '$strap.directives', 'ErrorHandler', 'angularFileUpload', 'infinite-scroll'])
+    var app = angular.module('App', ['ngCookies', 'ngRoute', 'ngTouch', 'chieffancypants.loadingBar', 'Overview', 'Upload', 'AccessLevelProvider', 'AccessLevelDirective', 'ModalDirective', 'UserProvider', 'PhotoProvider', '$strap.directives', 'angularFileUpload', 'infinite-scroll', 'boobs-photo', 'boobs-comments', 'boobs-warning'])
         .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
 
             $locationProvider.html5Mode(true);
 
-        }])
-        .controller('AppController', ['$scope', '$location', 'User', 'Error', '$window', function ($scope, $location, User, Error, $window) {
+            var interceptor = ['$location', '$q', function ($location, $q) {
+                function success(response) {
+                    return response;
+                }
 
-            $scope.loggedIn = false;
-            $scope.user = {
-                rememberme: true
-            };
-            $scope.errors = {};
+                function error(response) {
 
-            $scope.login = function () {
-                _clearErrors();
-                return User.login($scope.user)
-                    .success(_registered)
-                    .error(_errored);
-            };
-
-            $scope.sign = function () {
-                _clearErrors();
-                return User.register($scope.user)
-                    .success(_registered)
-                    .error(_errored);
-            };
-
-            $scope.openHome = function () {
-                $location.path("/");
-            };
-
-            ///// TEH PRIVATE
-
-            function _clearErrors() {
-                $scope.errors = null;
-                $scope.errors = {};
-            }
-
-            function _addError(field, message) {
-                $scope.errors[field] = message;
-            }
-
-            function _errored(response) {
-                if (response.errors) {
-                    if (angular.isArray(response.errors)) {
-                        Object.each(response.errors, function (field, errors) {
-                            _addError(field, errors.first())
-                        });
-
-                        if (response.errors.base && Object.isString(response.errors.base)) {
-                            _addError('extra', response.errors.base)
-                        }
-                    } else {
-                        _addError('extra', Error.error(response.errors));
+                    if (response.status === 401) {
+                        $location.path('/login/');
+                        return $q.reject(response);
+                    }
+                    else {
+                        return $q.reject(response);
                     }
                 }
-            }
 
-            function _registered(response) {
-                $scope.loggedIn = true;
-                $scope.user = {name: response.username};
+                return function (promise) {
+                    return promise.then(success, error);
+                }
+            }];
 
-                $window.location = $window.appConfig.domains.panel + "/login/a?" + response.token;
-            }
+            $httpProvider.responseInterceptors.push(interceptor);
+
+        }])
+        .controller('AppController', ['$scope', '$location', '$rootScope', 'Auth', function ($scope, $location, $rootScope, Auth) {
+
+            $scope.user = Auth.user;
+            $scope.userRoles = Auth.userRoles;
+            $scope.accessLevels = Auth.accessLevels;
+
+            $scope.showAdultWarning = $.cookie('termsAccepted') != 'Y';
+
+            $scope.logout = function () {
+                if (confirm('Are you sure you want to logout?')) {
+                    Auth.logout(function () {
+                        $location.path("/login/");
+                    })
+                }
+            };
+
+            $rootScope.$on("$routeChangeStart", function (event, next, current) {
+                $rootScope.error = null;
+
+                $('.nav-pills li').removeClass('active');
+
+                if (!Auth.authorize(next.access)) {
+                    if (Auth.isLoggedIn()) $location.path('/');
+                    else                  {
+
+                        $location.search('auth', 'req');
+                        $location.path('/login/');
+                    }
+                }
+            });
 
         }]);
 

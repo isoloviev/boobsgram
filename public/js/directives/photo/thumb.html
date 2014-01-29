@@ -1,0 +1,8 @@
+<a href="#" id="link-{{item.id}}" ng-click="show(item)"><img ng-src="{{item.fileNameProtected}}" alt="{{item.name}}" width="300"
+                                       class="thumb-photo img-thumbnail img-responsive" imageonload photo-id="{{item.id}}"></a>
+<div class="thumb-hover">
+    <span class="glyphicon glyphicon-heart"><span class="like-icon">{{item.meta.likes||0}}</span></span>
+    <span class="glyphicon glyphicon-comment margin-left"><span
+            class="like-icon">{{item.meta.comments||0}}</span></span>
+</div>
+

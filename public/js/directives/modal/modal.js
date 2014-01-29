@@ -20,7 +20,7 @@ define(['angular', 'jquery'], function (angular) {
                     $element,
                     loader;
 
-                loader = $http.get('js/directives/modal/modal.html')
+                loader = $http.get('/js/directives/modal/modal.html')
                     .success(function (data) {
                         template = data;
                     });

@@ -8,6 +8,7 @@ var users = require('./routes/users');
 var photos = require('./routes/photos');
 var http = require('http');
 var path = require('path');
+var passport = require('passport');
 var mongoose = require('mongoose'),
     config = require('./config.json');
 
@@ -23,9 +24,11 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('BOOBS-ME'));
+app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.session({ secret: 'BOOBS-ME' }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,12 +38,8 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
-var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('./models/User');
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 passport.use(new LocalStrategy({
     usernameField: 'email',
@@ -58,7 +57,8 @@ passport.use(new LocalStrategy({
 }));
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    console.log("serialized: " + user._id);
+    done(null, user._id);
 });
 
 
@@ -70,6 +70,38 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
+var FacebookStrategy = require('passport-facebook').Strategy;
+
+passport.use(new FacebookStrategy({
+        clientID: config.facebook.APP_ID,
+        clientSecret: config.facebook.APP_SECRET,
+        callbackURL: "http://boobsgram.localhost:3000/auth/facebook/callback"
+    },
+    function(accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        User.findOne({accountId: profile.provider + '-' + profile.id}, function(err, oldUser) {
+            if (err) { done(err); return; }
+            if (oldUser) {
+                done(null, oldUser);
+            } else {
+                var userRoles = require('../public/js/modules/routingConfig').userRoles;
+                var user = new User();
+                user.accountId = profile.provider + '-' + profile.id;
+                user.name = profile.displayName;
+                user.email = profile.emails[0].value;
+                user.gender = profile.gender;
+                user.role = userRoles['user'];
+                user.save(function(err) {
+                    if (err) { done(err); return; }
+                    done(null, user);
+                });
+            }
+        });
+    }
+));
+
+mongoose.set('debug', true);
+
 mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.db, null, function (err, db) {
     if (err) {
         console.log('Sorry, there is no mongo db server running.');
@@ -79,17 +111,35 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
             next();
         };
         app.get('/', attachDB, routes.index);
+        app.get('/404', routes.index);
+        app.get('/login', routes.index);
+        app.post('/logout', routes.logout);
+        // single photo view
+        app.get('/p/:photoId', routes.index);
+
         app.get('/upload.html', attachDB, routes.index);
         app.post('/login', attachDB, users.login);
         app.post('/register', attachDB, users.register);
         app.get('/logout', attachDB, users.logout);
 
+
         // graphic processor
         app.get('/gim/:width([0-9]{2,5})x:height([0-9]{2,5})/:filename', attachDB, photos.image);
+        app.get('/gim/:width([0-9]{2,5})x:height([0-9]{2,5})/:type/:filename', attachDB, photos.image);
 
         // REST
         app.post('/api/upload/', attachDB, photos.upload);
         app.get('/api/photos/', attachDB, photos.list);
+        app.get('/api/photo/:photoId', photos.item);
+        app.post('/api/photo/:photoId/comment', photos.postComment);
+        app.get('/api/photo/:photoId/comments', photos.comments);
+
+
+        // facebook
+        app.get('/auth/facebook', passport.authenticate('facebook', {display: 'touch'}));
+        app.get('/auth/facebook/callback',
+            passport.authenticate('facebook', { successRedirect: '/',
+                failureRedirect: '/login' }));
 
         http.createServer(app).listen(app.get('port'), function () {
             console.log('Successfully connected to mongodb://' + config.mongo.host + ':' + config.mongo.port,

@@ -34,6 +34,10 @@ body {
     margin-top: 30px;
 }
 
+.margin-left {
+    margin-left: 10px;
+}
+
 label {
     font-weight: normal;
 }
@@ -61,6 +65,10 @@ div.login-form-buttons {
 .jumbotron .btn {
     font-size: 21px;
     padding: 14px 24px;
+}
+
+.jumbotron-top-border {
+    border-top: 1px solid #6eafeb;
 }
 
 /* Customize the nav-justified links to be fill the entire space of the .navbar */
@@ -146,9 +154,18 @@ div.login-form-buttons {
     color: #3462d6;
 }
 
-.my-drop-zone { border: dotted 3px lightgray; }
-.ng-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
-.another-file-over-class { border: dotted 3px green; }
+.my-drop-zone {
+    border: dotted 3px lightgray;
+}
+
+.ng-file-over {
+    border: dotted 3px red;
+}
+
+/* Default class applied to drop zones on over */
+.another-file-over-class {
+    border: dotted 3px green;
+}
 
 .logotype {
     padding: 5px 0 0 0;
@@ -158,7 +175,95 @@ div.login-form-buttons {
     width: 95%;
 }
 
-.loading-bar {
-    background: url(/img/ajax-loader.gif) left no-repeat;
-    padding-left: 30px;
+.thumb {
+    margin-bottom: 30px;
+}
+
+.img-border {
+    border: 1px solid black;
+    padding: 1px;
+    background: url(/img/ajax-loader.gif) center no-repeat;
+    min-height: 150px;
+}
+
+.thumb-hover {
+    background: #000;
+    opacity: 0.5;
+    width: 288px;
+    position: absolute;
+    left: 20px;
+    height: 45px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    z-index: 5;
+    color: #fff;
+    text-align: center;
+    padding-top: 15px;
+    display: none;
+}
+
+.like-icon {
+    padding-left: 5px;
+    position: relative;
+    top: -1px;
+}
+
+.modal-dialog {
+    width: 1000px;
+}
+
+.comment-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.comment-item-last {
+    border-bottom: 0;
+}
+
+.userpic-name, .comment-body, .comment-date {
+    margin-left: 5px;
+}
+
+.comment-area {
+    height: 500px;
+    overflow: hidden;
+}
+
+.comment-date {
+    font-size: 80%;
+    color: #bebebe;
+}
+
+.comment-body {
+    padding-top: 3px;
+}
+
+.modal {
+    overflow: hidden;
+}
+
+.navi-page {
+    font-size: 150%;
+}
+
+.navi-page a:hover {
+    text-decoration:  none;
+}
+
+.photo-view .comment-area {
+    height: 643px;
+}
+
+.username-block {
+    margin: 20px 0;
+}
+
+.username-block h4 {
+    padding-left: 5px;
+}
+
+#menu-profile span.user-name {
+    padding-left: 10px;
 }

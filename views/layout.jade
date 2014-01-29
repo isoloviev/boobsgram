@@ -5,7 +5,8 @@ html
         meta(http-equiv="Content-Type",content="text/html; charset=utf-8")
         meta(name="language",content="en")
         meta(name="viewport",content="width=device-width, initial-scale=1.0")
-        link(href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css",rel="stylesheet",media="screen")
+        link(href="/css/bootstrap.min.css",rel="stylesheet",media="screen")
+        link(href="/css/jquery.custom-scrollbar.css",rel="stylesheet",media="screen")
         link(rel='stylesheet', href='/css/styles.css')
         link(rel='stylesheet', href='/css/loading-bar.min.css')
         style(type="text/css").
@@ -20,11 +21,19 @@ html
         .container
 
             .header
-                ul(class="nav nav-pills pull-right")
-                    li.active
-                        a(href="#") Home
+                ul(class="nav nav-pills pull-right",ng-cloak)
                     li
-                        a(href="#") Login
+                        a#menu-home(href="/")
+                            span(class="glyphicon glyphicon-home")
+                    li
+                        a#menu-login(href="/login",access-level="accessLevels.anon") Login
+                    li
+                        a#menu-profile(href="/profile",access-level="accessLevels.user")
+                            span(class="glyphicon glyphicon-user")
+                            span.user-name {{user.name}}
+                    li
+                        a#menu-logout(href="/logout",ng-click="logout()",access-level="accessLevels.user")
+                            span(class="glyphicon glyphicon-log-out")
 
                 div.logotype
                     a(href="/")
@@ -32,4 +41,7 @@ html
 
             block content
 
-        script(data-main="js/app",src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js")
+            if (showAdultWarning)
+                adult-warning
+
+        script(data-main="/js/app",src="/libs/require.min.js")

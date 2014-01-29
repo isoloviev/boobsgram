@@ -1,0 +1,51 @@
+<div id="window-{{item.id}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>{{item.name}}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-lg-8 col-sm-8">
+                        <img ng-src="/gim/600x600/{{item.fileName}}" alt="{{item.name}}" width="600"
+                             class="img-rounded"/>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-4">
+
+                        <div style="margin-bottom: 10px;">
+                            <button id="button-{{item.id}}" class="btn btn-primary"><span class="glyphicon glyphicon-heart-empty"></span></button>
+                        </div>
+
+                        <div class="well well-sm">
+
+                            <comments photo="item"/>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-2 text-left navi-page"><a href="#" ng-click="goPrev()">&laquo;</a></div>
+                    <div class="col-md-8 text-center">
+                        <script type="text/javascript" src="//yandex.st/share/share.js"
+                                charset="utf-8"></script>
+                        <div class="yashare-auto-init" data-yashareL10n="en"
+                             data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir,gplus"
+                             data-yashareTheme="counter"
+                             data-yashareLink="http://boobsgr.am/p/{{item.id}}/"
+                             data-yashareImage="http://boobsgr.am/gim/300x300/{{item.fileName}}"
+                             data-yashareDescription="Nice tits! Check this out!"></div>
+                    </div>
+                    <div class="col-md-2 text-right navi-page"><a href="#" ng-click="goNext()">&raquo;</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

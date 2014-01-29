@@ -1,0 +1,41 @@
+<div id="photo-comment-{{photo.id}}">
+    <div class="comment-area default-skin">
+
+        <div class="comment-item" ng-repeat="comment in items" ng-class="{'comment-item-last':$last}">
+            <div class="row">
+                <div class="col-md-2"><img ng-src="/gim/50x50/8f81f2a0-7f56-11e3-a876-939fee5b525e.jpg"
+                                           class="img-circle"/></div>
+                <div class="col-md-10">
+                    <div class="userpic-name"><a href="/u/seansoloviev">seansoloviev</a></div>
+                    <div class="comment-date">{{parseDate(comment.date)}}</div>
+                    <div class="comment-body">{{comment.body}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comment-last-holder"/>
+
+    </div>
+
+    <div class="alert alert-danger" ng-show="postErrors">
+        {{postErrors}}
+    </div>
+
+    <form ng-submit="submit()">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="post"
+                           maxlength="100" required="true">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-default" ng-disabled="busy">
+                                        <span ng-hide="busy">Send</span>
+                                        <span ng-show="busy"><img src="/img/ajax-loader.gif"></span>
+                                    </button>
+                                </span>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

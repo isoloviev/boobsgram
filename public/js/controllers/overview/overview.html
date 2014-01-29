@@ -8,15 +8,10 @@
 </div>
 
 <div>
-
     <div infinite-scroll='photo.nextPage()' infinite-scroll-disabled='photo.busy' infinite-scroll-distance='1'>
-        <div ng-repeat='item in photo.items'>
-            <img src="/gim/140x140/{{item.fileName}}" alt="{{item.name}}" class="img-rounded">
+        <div id="photo-{{item.id}}" ng-repeat='item in photo.items' class="col-lg-3 col-md-3 col-xs-6 thumb">
+            <photo-thumb
+                    item="item"/>
         </div>
-        <div class="loading-bar" ng-show='photo.busy'>Loading data...</div>
     </div>
-
 </div>
-
-
-
