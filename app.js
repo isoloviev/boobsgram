@@ -83,7 +83,7 @@ passport.use(new FacebookStrategy({
             if (oldUser) {
                 done(null, oldUser);
             } else {
-                var userRoles = require('../public/js/modules/routingConfig').userRoles;
+                var userRoles = require('./public/js/modules/routingConfig').userRoles;
                 var user = new User();
                 user.accountId = profile.provider + '-' + profile.id;
                 user.name = profile.displayName;
