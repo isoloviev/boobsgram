@@ -18,8 +18,7 @@ define(['angular'], function (angular) {
                 $http.get(url).success(function (data) {
                     var items = data.list;
                     for (var i = 0; i < items.length; i++) {
-                        items[i].id = items[i]._id;
-                        items[i].fileNameProtected = "/gim/300x300/" + (!Auth.isLoggedIn() ? 'blur/'  : '') + items[i].fileName;
+                        items[i].fileNameProtected = "/gim/300x300/" + (!Auth.isLoggedIn() ? 'blur/' : '') + items[i].fileName;
                         this.items.push(items[i]);
                     }
                     if (items.length == 0) {
@@ -33,13 +32,7 @@ define(['angular'], function (angular) {
             Photo.prototype.rndList = function (cb) {
                 var url = "/api/photos/?rnd=1";
                 $http.get(url).success(function (data) {
-                    var items = data.list;
-                    var loItems = [];
-                    for (var i = 0; i < items.length; i++) {
-                        items[i].id = items[i]._id;
-                        loItems.push(items[i]);
-                    }
-                    cb(null, loItems);
+                    cb(null, data.list);
                 }.bind(this));
             };
 
@@ -61,11 +54,11 @@ define(['angular'], function (angular) {
                     }.bind(this));
             };
 
-            Photo.prototype.getItem = function(pid, cb) {
+            Photo.prototype.getItem = function (pid, cb) {
                 var url = "/api/photo/" + pid;
                 $http
                     .get(url)
-                    .success(function(data) {
+                    .success(function (data) {
                         cb(null, data.photo);
                     }.bind(this));
             };

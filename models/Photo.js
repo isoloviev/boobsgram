@@ -4,11 +4,11 @@ var mongoose = require('mongoose')
 
 var PhotoSchema = new Schema({
     name: String,
+    modelName: String,
+    photographerName: String,
     dateAdded: Date,
     fileName: String,
-    user: [
-        {type: Schema.Types.ObjectId, ref: 'User'}
-    ],
+    user: {type: Schema.Types.ObjectId, ref: 'User'},
     meta: {
         likes: Number,
         comments: Number
@@ -16,14 +16,14 @@ var PhotoSchema = new Schema({
     comments: [{
         body: String,
         date: Date,
-        user: [
-            {type: Schema.Types.ObjectId, ref: 'User'}
-        ]
+        user: {type: Schema.Types.ObjectId, ref: 'User'}
     }],
     random_point: {
         type: Array,
         index: '2d'
     }
 });
+
+PhotoSchema.set('toJSON', { getters: true });
 
 module.exports = mongoose.model('Photo', PhotoSchema);

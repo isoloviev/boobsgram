@@ -1,22 +1,27 @@
 var mongoose = require('mongoose')
-    ,Schema = mongoose.Schema
-    ,ObjectId = Schema.ObjectId;
+    , Schema = mongoose.Schema
+    , ObjectId = Schema.ObjectId;
 
 var UserSchema = new Schema({
-    username: String,
-    name: String,
-    photos: [{ type: Schema.Types.ObjectId, ref: 'Photo' }],
-    provider: String,
-    email: String,
-    accountId: {
-        type: String,
-        unique: true
+        username: String,
+        name: String,
+        provider: String,
+        email: String,
+        accountId: {
+            type: String,
+            unique: true
+        },
+        gender: String,
+        role: {
+            bitMask: Number,
+            title: String
+        }
     },
-    gender: String,
-    role: {
-        bitMask: Number,
-        title: String
-    }
+    { id: true });
+
+UserSchema.set('toJSON', { getters: true });
+UserSchema.path('username').get(function (v) {
+    return v ? v : this.id;
 });
 
 module.exports = mongoose.model('User', UserSchema);

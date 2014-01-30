@@ -32,6 +32,11 @@ define(['angular', 'jquery', 'jqueryScroll'], function (angular) {
 
                         scope.show = function (item) {
 
+                            // only one preview in one time.
+                            if ($('.photo-display').length != 0) {
+                                return;
+                            }
+
                             if (!Auth.isLoggedIn()) {
                                 $location.search('auth', 'req');
                                 $location.path("/login");
@@ -52,6 +57,26 @@ define(['angular', 'jquery', 'jqueryScroll'], function (angular) {
 
                                 $element.on('hidden.bs.modal', function (e) {
                                     $(e.target).remove();
+                                    $(document).off('keydown');
+                                });
+
+                                $rootScope.lastViewedPhoto = 'photo-' + scope.item.id;
+
+                                $(document).keydown(function(e) {
+                                    // esc
+                                    if (e.keyCode == 27) {
+                                        $element.modal('hide');
+                                    }
+                                    // left arrow
+                                    if (e.keyCode == 37 && e.ctrlKey) {
+                                        scope.goPrev();
+                                        e.stopPropagation();
+                                    }
+                                    // right arrow
+                                    if (e.keyCode == 39 && e.ctrlKey) {
+                                        scope.goNext();
+                                        e.stopPropagation();
+                                    }
                                 });
                             });
 
@@ -60,11 +85,12 @@ define(['angular', 'jquery', 'jqueryScroll'], function (angular) {
                         var photoNavigation = function (o) {
                             if (o[0] && o[0].id.indexOf('photo') > -1) {
                                 $element.modal('hide');
+                                $(document).off('keydown');
                                 $element.on('hidden.bs.modal', function (e) {
                                     o.find('a').click();
                                     $('html, body').animate({
                                         scrollTop: o.offset().top
-                                    }, 2000);
+                                    }, 500);
                                 });
                             }
                         };

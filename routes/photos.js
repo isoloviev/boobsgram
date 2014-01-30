@@ -57,9 +57,9 @@ module.exports = {
                                 return;
                             }
                             // create preview
-                            module.exports._imagePreview(fileName, newPath, 300, 300, false, function () {
-                                module.exports._imagePreview(fileName, newPath, 300, 300, true, function () {
-                                    module.exports._imagePreview(fileName, newPath, 600, 600, false, function () {
+                            module.exports._imagePreview(fileName, newPath, 300, 300, false, false, function () {
+                                module.exports._imagePreview(fileName, newPath, 300, 300, true, false, function () {
+                                    module.exports._imagePreview(fileName, newPath, 600, 600, false, false, function () {
                                         res.send(200);
                                     });
                                 });
@@ -75,7 +75,7 @@ module.exports = {
 
     },
 
-    _imagePreview: function (img, src, w, h, blur, next) {
+    _imagePreview: function (img, src, w, h, blur, userpic, next) {
         var gm = require('gm')
             , resizeX = w
             , resizeY = h;
@@ -96,6 +96,49 @@ module.exports = {
         })
     },
 
+    _imageProcessor: function(w, h, filename, type, next) {
+        console.log('%s X %s ; %s', w, h, filename);
+        var isBlurred = false;
+        var isUserPic = false;
+        if (type) {
+            console.log('with alias - ' + type);
+            isBlurred = type == 'blur';
+            isUserPic = type == 'u';
+        }
+
+        if (filename == '{{item.fileName}}') {
+            next(404);
+            return;
+        }
+
+        var gm = require('gm');
+        var tFileName = path.join(__dirname, '..', 'uploads', w + 'x' + h + (isBlurred ? '-blur' : ''), filename);
+
+        if (fs.existsSync(tFileName)) {
+
+            next(200, tFileName);
+
+        } else {
+
+            var src = path.join(__dirname, '..', 'uploads', filename);
+            // replace to default
+            if (!fs.existsSync(src) && isUserPic) {
+                src = path.join(__dirname, '..', 'public', 'img', 'default_profile_pic.jpg');
+            }
+
+            module.exports._imagePreview(filename, src, w, h, isBlurred, isUserPic, function () {
+
+                if (!fs.existsSync(tFileName)) {
+                    next(404);
+                    return;
+                }
+
+                next(200, tFileName);
+
+            });
+
+        }
+    },
 
     list: function (req, res, next) {
 
@@ -135,28 +178,16 @@ module.exports = {
             });
     },
 
-    image: function (req, res, next) {
-        console.log('%s X %s ; %s', req.params.width, req.params.height, req.params.filename);
-        var isBlurred = false;
-        if (req.params.type) {
-            console.log('with alias - ' + req.params.type);
-            isBlurred = req.params.type == 'blur';
-        }
+    image: function (req, res) {
 
-        if (req.params.filename == '{{item.fileName}}') {
-            res.send(404);
-            return;
-        }
+        module.exports._imageProcessor(req.params.width, req.params.height, req.params.filename, req.params.type, function(code, filename) {
 
-        var gm = require('gm')
-            , resizeX = req.params.width
-            , resizeY = req.params.height;
+            if (code == 404) {
+                res.send(404);
+                return;
+            }
 
-        var tFileName = path.join(__dirname, '..', 'uploads', resizeX + 'x' + resizeY + (isBlurred ? '-blur' : ''), req.params.filename);
-
-        if (fs.existsSync(tFileName)) {
-
-            var stat = fs.statSync(tFileName);
+            var stat = fs.statSync(filename);
 
             res.writeHead(200, {
                 'Content-Type': 'image/jpeg',
@@ -165,31 +196,11 @@ module.exports = {
                 'Pragma': 'public'
             });
 
-            var readStream = fs.createReadStream(tFileName);
+            var readStream = fs.createReadStream(filename);
             readStream.pipe(res);
 
-        } else {
+        });
 
-            module.exports._imagePreview(req.params.filename, path.join(__dirname, '..', 'uploads', req.params.filename), resizeX, resizeY, isBlurred, function () {
-                if (!fs.existsSync(tFileName)) {
-                    res.send(404);
-                    return;
-                }
-
-                var stat = fs.statSync(tFileName);
-
-                res.writeHead(200, {
-                    'Content-Type': 'image/jpeg',
-                    'Content-Length': stat.size,
-                    'Cache-Control': 'max-age=86400, public',
-                    'Pragma': 'public'
-                });
-
-                var readStream = fs.createReadStream(tFileName);
-                readStream.pipe(res);
-            });
-
-        }
     },
 
     postComment: function (req, res, next) {
@@ -217,7 +228,7 @@ module.exports = {
 
     item: function (req, res, next) {
         console.log('User wants to get info about photo %s', req.params.photoId);
-        Photo.findOne({ _id: req.params.photoId}, function (err, photo) {
+        Photo.findOne({ _id: req.params.photoId}, '-comments').populate('user').exec(function (err, photo) {
             res.json({ photo: photo});
         });
     },

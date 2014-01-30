@@ -116,8 +116,20 @@ require([
             $scope.user = Auth.user;
             $scope.userRoles = Auth.userRoles;
             $scope.accessLevels = Auth.accessLevels;
+            $rootScope.lastViewedPhoto = null;
 
             $scope.showAdultWarning = $.cookie('termsAccepted') != 'Y';
+
+            $('body').keydown(function(e) {
+                if (e.keyCode == 13 && e.ctrlKey) {
+                    if ($rootScope.lastViewedPhoto) {
+                        $('#' + $rootScope.lastViewedPhoto + ' a').click();
+                    } else {
+                        $('#photo-list').find('> div:first a').click();
+                    }
+                    e.stopPropagation();
+                }
+            });
 
             $scope.logout = function () {
                 if (confirm('Are you sure you want to logout?')) {

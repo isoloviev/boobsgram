@@ -3,10 +3,10 @@
 
         <div class="comment-item" ng-repeat="comment in items" ng-class="{'comment-item-last':$last}">
             <div class="row">
-                <div class="col-md-2"><img ng-src="/gim/50x50/8f81f2a0-7f56-11e3-a876-939fee5b525e.jpg"
+                <div class="col-md-2"><img ng-src="/gim/50x50/u/{{comment.user.id}}.jpg"
                                            class="img-circle"/></div>
                 <div class="col-md-10">
-                    <div class="userpic-name"><a href="/u/seansoloviev">seansoloviev</a></div>
+                    <div class="userpic-name"><a href="/u/{{comment.user.username}}">{{comment.user.name}}</a></div>
                     <div class="comment-date">{{parseDate(comment.date)}}</div>
                     <div class="comment-body">{{comment.body}}</div>
                 </div>
@@ -28,7 +28,7 @@
                     <input type="text" class="form-control" ng-model="post"
                            maxlength="100" required="true">
                                 <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-default" ng-disabled="busy">
+                                    <button type="submit" class="btn btn-default" ng-disabled="busy" ng-class="{disabled: !user.name}">
                                         <span ng-hide="busy">Send</span>
                                         <span ng-show="busy"><img src="/img/ajax-loader.gif"></span>
                                     </button>
