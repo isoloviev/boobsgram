@@ -78,6 +78,7 @@ passport.use(new FacebookStrategy({
         callbackURL: config.facebook.APP_CALLBACK
     },
     function(accessToken, refreshToken, profile, done) {
+        console.log(profile);
         User.findOne({accountId: profile.provider + '-' + profile.id}, function(err, oldUser) {
             if (err) { done(err); return; }
             if (oldUser) {
@@ -87,7 +88,8 @@ passport.use(new FacebookStrategy({
                 var user = new User();
                 user.accountId = profile.provider + '-' + profile.id;
                 user.name = profile.displayName;
-                user.email = profile.emails[0].value;
+                if (profile.emails)
+                    user.email = profile.emails[0].value;
                 user.gender = profile.gender;
                 user.role = userRoles['user'];
                 user.save(function(err) {
