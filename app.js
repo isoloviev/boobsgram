@@ -75,10 +75,9 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(new FacebookStrategy({
         clientID: config.facebook.APP_ID,
         clientSecret: config.facebook.APP_SECRET,
-        callbackURL: "http://boobsgram.localhost:3000/auth/facebook/callback"
+        callbackURL: config.facebook.APP_CALLBACK
     },
     function(accessToken, refreshToken, profile, done) {
-        console.log(profile);
         User.findOne({accountId: profile.provider + '-' + profile.id}, function(err, oldUser) {
             if (err) { done(err); return; }
             if (oldUser) {
