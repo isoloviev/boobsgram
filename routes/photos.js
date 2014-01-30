@@ -69,6 +69,9 @@ module.exports = {
                     }, 500);
                 });
 
+            } else {
+                console.log(err);
+                next();
             }
         });
 
