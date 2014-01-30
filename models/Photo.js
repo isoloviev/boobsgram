@@ -4,8 +4,10 @@ var mongoose = require('mongoose')
 
 var PhotoSchema = new Schema({
     name: String,
-    modelName: String,
-    photographerName: String,
+    author: {
+        m: String,
+        p: String
+    },
     dateAdded: Date,
     fileName: String,
     user: {type: Schema.Types.ObjectId, ref: 'User'},
