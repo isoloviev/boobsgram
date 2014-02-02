@@ -18,11 +18,12 @@ exports.index = function (req, res) {
     res.render('index', {
         title: 'Boobsgram - Share your boobs. The best collection of boobs.',
         appConfig: {isProduction: false},
-        loggedUser: req.user
+        loggedUser: req.user,
+        showAdultWarning: res.cookie('termsAccepted') != 'Y'
     });
 };
 
-exports.logout = function(req, res) {
+exports.logout = function (req, res) {
     req.logout();
     res.send(200);
 };

@@ -28,6 +28,10 @@ html
                     li
                         a#menu-login(href="/login",access-level="accessLevels.anon") Login
                     li
+                        a#menu-profile(href="/management",access-level="accessLevels.admin")
+                            span(class="glyphicon glyphicon-cog")
+                            span.user-name Management
+                    li
                         a#menu-profile(href="/profile",access-level="accessLevels.user")
                             span(class="glyphicon glyphicon-user")
                             span.user-name {{user.name}}
@@ -43,5 +47,30 @@ html
 
             if (showAdultWarning)
                 adult-warning
+
+        script(type="text/javascript").
+            (function (d, w, c) {
+            (w[c] = w[c] || []).push(function() {
+            try {
+            w.yaCounter21496993 = new Ya.Metrika({id:21496993,
+            webvisor:true,
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true});
+                } catch(e) { }
+                });
+                    var n = d.getElementsByTagName("script")[0],
+                    s = d.createElement("script"),
+                f = function () { n.parentNode.insertBefore(s, n); };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+                if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else { f(); }
+            })(document, window, "yandex_metrika_callbacks");
+        noscript
+            div
+                img(src="//mc.yandex.ru/watch/21496993",style="position:absolute; left:-9999px;",alt="")
 
         script(data-main="/js/app",src="/libs/require.min.js")

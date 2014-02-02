@@ -118,8 +118,6 @@ require([
             $scope.accessLevels = Auth.accessLevels;
             $rootScope.lastViewedPhoto = null;
 
-            $scope.showAdultWarning = $.cookie('termsAccepted') != 'Y';
-
             $('body').keydown(function(e) {
                 if (e.keyCode == 13 && e.ctrlKey) {
                     if ($rootScope.lastViewedPhoto) {
