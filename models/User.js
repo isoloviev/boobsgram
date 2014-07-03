@@ -15,7 +15,8 @@ var UserSchema = new Schema({
         role: {
             bitMask: Number,
             title: String
-        }
+        },
+        regDate: Date
     },
     { id: true });
 

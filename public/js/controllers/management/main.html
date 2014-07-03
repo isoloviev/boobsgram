@@ -1,0 +1,52 @@
+<h1>Admin Dashboard</h1>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" id="mgmTabs">
+    <li><a href="#users" data-toggle="tab">Users</a></li>
+    <li><a href="#photos" data-toggle="tab">Photos</a></li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane active" id="users">
+        <div class="loading" ng-hide="users.length > 0">Loading...</div>
+        <table class="table" ng-show="users.length > 0">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Account Id</th>
+                <th>Name</th>
+                <th>E-mail</th>
+                <th>Registered</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in users">
+                <td>{{$index + 1}}</td>
+                <td>{{item.accountId}}</td>
+                <td><a href="/management/{{item.id}}">{{item.name}}</a></td>
+                <td>{{item.email}}</td>
+                <td>{{item.regDate}}</td>
+                <td>{{item.role.title}}</td>
+                <td>
+                    <button type="button" class="btn btn-xs btn-primary" ng-click="openProfile(item)">Profile</button>
+                    <button type="button" class="btn btn-xs btn-warning">Ban</button>
+                    <button type="button" class="btn btn-xs btn-danger">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="photos">
+        <div class="loading" ng-hide="photo.items.length > 0">Loading...</div>
+
+        <div infinite-scroll='photo.nextPage()' infinite-scroll-disabled='photo.busy' infinite-scroll-distance='1' id="photo-list" ng-show="photo.items.length > 0" style="margin-top: 15px;">
+            <div id="photo-{{item.id}}" ng-repeat='item in photo.items' class="col-lg-3 col-md-3 col-xs-6 thumb">
+                <photo-thumb
+                        item="item"/>
+            </div>
+        </div>
+    </div>
+</div>

@@ -40,3 +40,23 @@ module.exports.mustAuthenticatedMw = function (req, res, next){
         ? next()
         : res.redirect('/');
 };
+
+module.exports.adminListUsers = function(req, res) {
+    // onyl admins are allowed
+    if (req.user.role.title != 'admin') {
+        res.send(401);
+        return;
+    }
+
+    User
+        .find(null)
+        .sort('-regDate')
+        .exec(function (err, list) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.json(200, { list: list });
+        });
+
+};

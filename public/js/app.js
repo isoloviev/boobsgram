@@ -72,6 +72,7 @@ require([
     'models/photo',
     'controllers/overview/overview',
     'controllers/upload/upload',
+    'controllers/management/management',
     'directives/modal/modal',
     'directives/scroll/scroll',
     'directives/photo/photo',
@@ -82,7 +83,7 @@ require([
     'jqueryCookies'
 ], function (angular) {
 
-    var app = angular.module('App', ['ngCookies', 'ngRoute', 'ngTouch', 'chieffancypants.loadingBar', 'Overview', 'Upload', 'AccessLevelProvider', 'AccessLevelDirective', 'ModalDirective', 'UserProvider', 'PhotoProvider', '$strap.directives', 'angularFileUpload', 'infinite-scroll', 'boobs-photo', 'boobs-comments', 'boobs-warning'])
+    var app = angular.module('App', ['ngCookies', 'ngRoute', 'ngTouch', 'chieffancypants.loadingBar', 'Overview', 'Upload', 'Management', 'AccessLevelProvider', 'AccessLevelDirective', 'ModalDirective', 'UserProvider', 'PhotoProvider', '$strap.directives', 'angularFileUpload', 'infinite-scroll', 'boobs-photo', 'boobs-comments', 'boobs-warning'])
         .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
 
             $locationProvider.html5Mode(true);

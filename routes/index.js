@@ -15,13 +15,26 @@ exports.index = function (req, res) {
     console.log("User is logged");
     console.log(user);
     res.cookie('user', JSON.stringify(user));
+    var cookies = parseCookies(req);
     res.render('index', {
         title: 'Boobsgram - Share your boobs. The best collection of boobs.',
         appConfig: {isProduction: false},
         loggedUser: req.user,
-        showAdultWarning: res.cookie('termsAccepted') != 'Y'
+        showAdultWarning: cookies['termsAccepted'] != 'Y'
     });
 };
+
+function parseCookies (request) {
+    var list = {},
+        rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = unescape(parts.join('='));
+    });
+
+    return list;
+}
 
 exports.logout = function (req, res) {
     req.logout();

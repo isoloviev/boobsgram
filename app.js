@@ -92,6 +92,7 @@ passport.use(new FacebookStrategy({
                     user.email = profile.emails[0].value;
                 user.gender = profile.gender;
                 user.role = userRoles['user'];
+                user.regDate = new Date();
                 user.save(function(err) {
                     if (err) { done(err); return; }
                     done(null, user);
@@ -112,6 +113,7 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
             next();
         };
         app.get('/', attachDB, routes.index);
+        app.get('/management', attachDB, routes.index);
         app.get('/404', routes.index);
         app.get('/login', routes.index);
         app.post('/logout', routes.logout);
@@ -134,6 +136,9 @@ mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/
         app.get('/api/photo/:photoId', photos.item);
         app.post('/api/photo/:photoId/comment', photos.postComment);
         app.get('/api/photo/:photoId/comments', photos.comments);
+
+        // admin rest
+        app.get('/api/users', users.adminListUsers);
 
 
         // facebook

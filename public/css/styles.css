@@ -264,6 +264,6 @@ div.login-form-buttons {
     padding-left: 5px;
 }
 
-#menu-profile span.user-name {
+#menu-profile span.user-name, #menu-mgmnt span.user-name {
     padding-left: 10px;
 }
